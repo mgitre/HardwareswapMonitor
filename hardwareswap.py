@@ -4,6 +4,8 @@ import discord
 import re
 from discord import Webhook, RequestsWebhookAdapter, File
 
+
+###FILL OUT EVERYTHING HERE
 reddit_api_id = ""
 reddit_api_secret = ""
 user_agent="" #should take the form of "[any text, doesn't matter] u/Your_Username"
@@ -20,6 +22,10 @@ keywords = [] #can't be anything that will be broken up by any of these characte
 #this is case insensitive
 #my config: ["RX580","580","RX570","570","RX480","480","RX470","470","RX590","590","5700","5700XT","RX5700","RX5700XT","1070","1080","1080ti","1070ti"]
 
+
+###STOP FILLING OUT
+
+#subroutine to find prices in strings
 def getPrice(string):
     if not "$" in string:
         return []
@@ -33,22 +39,30 @@ def getPrice(string):
             return matches
     return []
 
+#processes a given reddit post
 def process(post):
+    #if the post is a buyer, just skip it. we aren't interested
     if post.link_flair_text=="BUYING":
         return
-    keywords=["RX580","580","RX570","570","RX480","480","RX470","470","RX590","590","5700","5700XT","RX5700","RX5700XT","1070","1080","1080ti","1070ti"]
+    keywords=keywords
     delimiters="s|,|'|/| |\+|\[|\-"
-    titlesplit = re.split(delimiters, post.title)
+    
 
     selftextlower = post.selftext.lower()
     titlelower=post.title.lower()
+    
+    #splits the post into a bunch of chunks
     postsplit = re.split(delimiters, selftextlower)
+    
+    #splits title into chunks of have/want and takes out what they have
     titlesplitbypart = re.split("\[(.*?)\]", titlelower)
     if len(titlesplitbypart)!=7:
         have=""
     else:
         have=titlesplitbypart[4]
     titlesplit = re.split(delimiters, have)
+    
+    #goes through keywords and checks. this can be cleaned up a lot.
     for keyword in keywords:
         keyword = keyword.lower()
         if keyword in titlesplit:
